@@ -1,5 +1,5 @@
-<footer class="bg-white mx-auto">
-    <div class="row  justify-content-center align-items-center container gap-2">
+<footer class="bg-white p-5">
+    <div class="row  justify-content-center container gap-2">
         <div class="col-12 col-md-4 col-lg">
             <h6 class="fw-bolder mb-2">Informasi</h6>
             <div class="fw-semibold d-flex flex-column gap-1">
