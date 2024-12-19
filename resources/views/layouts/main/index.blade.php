@@ -11,49 +11,77 @@
 
     <link id="themeColors" rel="stylesheet" href="{{ asset('dist/css/style.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('dist/libs/sweetalert2/dist/sweetalert2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/css/custom.css') }}">
 
+    <style>
+        .unstyled>* {
+            margin: 0;
+        }
+
+        .mb-4 {
+            margin-bottom: 2rem !important;
+        }
+    </style>
     @stack('style')
 </head>
 
 <body>
+    <a href="https://wa.me/6285710173297" target="_blank" class="position-fixed" style="right: 15px; bottom: 15px;">
+        <img src="{{ asset('dist/images/icons/headset.png') }}" alt="" class="bg-dark p-2 rounded-circle"
+            width="50">
+    </a>
     <div class="d-flex flex-column" style="min-height: 100dvh;">
         @include('layouts.main.header')
         <div class="wrapper" style="flex: 1">
             @yield('content')
         </div>
         @include('layouts.main.footer')
-        <div style="top: 0;height: 70vh;" class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
-            <div class="offcanvas-header d-flex justify-content-between">
-              <span></span>
-              <img src="{{ asset('dist/logos/full-dark.png') }}" alt="Logo" height="30">
-              <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasBottom"
+            aria-labelledby="offcanvasBottomLabel" style="min-width: 50%;">
+            <div class="offcanvas-header d-flex flex-row-reverse justify-content-start align-items-center gap-3">
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+                @php
+                    $categories_header = \App\Models\Category::limit(5)->get();
+                @endphp
+                @foreach ($categories_header as $cat)
+                    <a href="{{ route('categories.show', $cat->id) }}"
+                        class="text-uppercase text-muted fs-3 fw-semibold"
+                        style="text-wrap: nowrap;">{{ $cat->name }}</a>
+                @endforeach
             </div>
             <div class="offcanvas-body">
-              <div class="container row">
-                <div class="col-md-4">
-                  <a href="" class="d-block fs-5 fw-bold text-black">Wanita</a>
-                  <a href="" class="d-block fs-5 fw-bold text-black">Pria</a>
-                  <a href="" class="d-block fs-5 fw-bold text-black">Anak</a>
-                  <a href="" class="d-block fs-5 fw-bold text-black">Informasi</a>
-                  <a href="" class="d-block text-black">Tentang MFashion</a>
-                  <a href="" class="d-block text-black">CSR</a>
-                  <a href="" class="d-block text-black">Sustainabillity</a>
-                  <a href="" class="d-block text-black">Customer Service</a>
-                  <a href="" class="d-block text-black">Lokasi Toko</a>
-                </div>
-                <div class="col-md-8">
-                  <h4>Promo</h4>
-                  <div class="d-flex align-items-stretch justify-content-center rounded overflow-hidden">
-                    <img src="{{ asset('dist/images/profile/user-1.jpg') }}" alt="" class="rounded-start d-none d-lg-block" height="300px">
-                    <div class="bg-danger d-flex flex-column justify-content-center p-5 text-light" style="flex: 1; height: 300px">
-                        <div class="lead">PENAWARAN KHUSUS</div>
-                        <h1 class="m-0 text-light fw-bolder">Diskon 35% hanya minggu ini dan dapatkan hadiah istimewa</h1>
+                <div class="d-flex flex-row-reverse gap-3 justify-content-between h-100 pt-4">
+                    <div class="d-flex flex-column justify-content-between">
+                        <div class="d-flex flex-column gap-1 text-end">
+                            <a href="#" class="h4 m-0 text-uppercase text-black fw-bolder">Barang Baru</a>
+                            <a href="#" class="h4 m-0 text-uppercase text-black fw-bolder">Promo 12.12</a>
+                            <a href="#" class="h4 m-0 text-uppercase text-black fw-bolder">Kategori Produk</a>
+                        </div>
+                        <div class="d-flex flex-column text-end">
+                            <a href="/about" class="text-uppercase text-black fw-bolder">Tentang Kami</a>
+                            <a href="/location" class="text-uppercase text-black fw-bolder">Lokasi Toko</a>
+                            <a href="/contact-us" class="text-uppercase text-black fw-bolder">Sosial Media</a>
+                            <a href="https://wa.me/6285710173297" target="_blank" class="text-uppercase text-black fw-bolder">Customer Service</a>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column gap-5" style="max-width: 200px; overflow: auto;">
+                        <div>
+                            <img src="{{ asset('dist/images/profile/user-1.jpg') }}" alt="" class="d-none d-lg-block w-100">
+                            <h6 class="m-0 mt-2 fw-bolder text-uppercase">Diskon 12.12</h6>
+                        </div>
+                        <div>
+                            <img src="{{ asset('dist/images/profile/user-1.jpg') }}" alt="" class="d-none d-lg-block w-100">
+                            <h6 class="m-0 mt-2 fw-bolder text-uppercase">Diskon 12.12</h6>
+                        </div>
+                        <div>
+                            <img src="{{ asset('dist/images/profile/user-1.jpg') }}" alt="" class="d-none d-lg-block w-100">
+                            <h6 class="m-0 mt-2 fw-bolder text-uppercase">Diskon 12.12</h6>
+                        </div>
                     </div>
                 </div>
-                </div>
-              </div>
             </div>
-          </div>
+        </div>
     </div>
 
     <!--  Import Js Files -->

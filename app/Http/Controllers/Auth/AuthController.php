@@ -18,19 +18,23 @@ class AuthController extends Controller
         try{
             // cek email ada atau tidak
             $user = User::where('email', $data["email"])->first();
-            if(!$user) return redirect()->back()->with('error', 'Email user tidak ditemukan!');
-            if($user->is_delete == 1) return redirect()->back()->with('error', 'Akun anda telah tidak aktif, silahkan lakukan registrasi kembali!');
+            if(!$user) return redirect()->back()->with('error', 'Email user tidak ditemukan!')->withInput();
+            if($user->is_delete == 1) return redirect()->back()->with('error', 'Akun anda telah tidak aktif, silahkan lakukan registrasi kembali!')->withInput();
 
             if(Auth::attempt($data)){
                 logger()->info('Auth check after login:', ['auth' => Auth::check()]);
                 logger()->info('Session ID:', ['session_id' => session()->getId()]);
                 $request->session()->regenerate();
-                return redirect()->intended('login-success');
+                if(Auth::user()->hasRole('admin')){
+                    return redirect()->route('admin.dashboard');
+                }else {
+                    return redirect()->route('home');
+                }
             }   
     
-            return redirect()->back()->with('error','Password salah, silahkan check kembali akun password anda!');
+            return redirect()->back()->with('error','Password salah, silahkan check kembali akun password anda!')->withInput();
         }catch(\Throwable $th){
-            return redirect()->back()->withError($th->getMessage());
+            return redirect()->back()->withError($th->getMessage())->withInput();
         }
     }
 
@@ -39,12 +43,13 @@ class AuthController extends Controller
         $data = $request->validated();
 
         try{
+            if(isset($data["password_confirmation"])) unset($data["password_confirmation"]);
             $data["password"] = bcrypt($data["password"]);
 
             $user = User::create($data);
             $user->syncRoles('user');
     
-            return redirect()->route('auth.register.success');
+            return redirect()->route('login');
         }catch(\Throwable $th){
             return redirect()->back()->with('error', $th->getMessage());
         }
@@ -54,6 +59,7 @@ class AuthController extends Controller
     {
         try{
             Auth::logout();
+            logger()->info('Auth check after login:', ['auth' => Auth::check()]);
             return redirect()->route('auth.view.login');
         }catch(\Throwable $th){
             return redirect()->back()->with('error', $th->getMessage());

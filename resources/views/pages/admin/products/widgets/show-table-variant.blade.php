@@ -1,58 +1,80 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h4 class="m-0 fw-semibold" >Data Ukuran</h4>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-create-variant">+ Tambah Ukuran</button>
+        <h4 class="m-0 fw-semibold" >Data Varian</h4>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-create-variant">+ Tambah Varian</button>
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-striped align-middle" id="table-variant">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama</th>
-                        <th>Harga</th>
-                        <th>Stok</th>
-                        <th>Ukuran (l &times; t)</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php
-                        $data_size = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-                    @endphp
-                    @foreach ($data_size as $size )
-                        <tr>
-                            <th>{{ $loop->iteration }}</th>
-                            <td>{{ $size }}</td>
-                            <td>Rp 100.000</td>
-                            <td>9</td>
-                            <td>54cm &times; 74cm</td>
-                            <td>
-                                <button type="button" class="btn btn-warning p-2" data-bs-toggle="modal" data-bs-target="#modal-edit-variant"><div class="ti ti-edit"></div></button>
-                                <button type="button" class="btn btn-danger p-2 btn-delete-variant"><div class="ti ti-trash"></div></button>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <table class="table table-striped align-middle" id="table-variant"></table>
         </div>
     </div>
 </div>
 
+<form action="" id="delete-variant-form" method="POST">
+    @csrf
+    @method('DELETE')
+</form>
+
 @push('script')
     <script>
         $(document).ready(function() {
-            $('#table-variant').DataTable();
+            $('#table-variant').DataTable({
+                ajax: "{{ route('data-table.product-detail', ['product_id' =>$product->id]) }}",
+                order: [[1, 'asc']],
+                serverSide: true,
+                columns: [
+                    {
+                        data: 'DT_RowIndex',
+                        title: 'No',
+                        searchable: false,
+                        orderable: false
+                    },
+                    {
+                        data: 'size.size',
+                        title: 'Ukuran',
+                    },
+                    {
+                        data: 'color.color',
+                        title: 'Warna',
+                    },
+                    {
+                        data: 'stock',
+                        title: 'Stok'
+                    },
+                    {
+                        title: 'Aksi',
+                        orderable: false,
+                        searchable: false,
+                        mRender: function(data, type, row) {
+                            return `
+                                <td>
+                                    <button type="button" class="btn btn-warning p-2 btn-edit-variant" data-bs-toggle="modal" data-bs-target="#modal-edit-variant" data-data='${JSON.stringify(row)}'><div class="ti ti-edit"></div></button>
+                                    <button type="button" class="btn btn-danger p-2 btn-delete-variant" data-data='${JSON.stringify(row)}'><div class="ti ti-trash"></div></button>
+                                </td>
+                            `
+                        }
+                    }
+                ]
+            });
 
             $(document).on('click', '.btn-delete-variant', function() {
+                const data = $(this).data('data')
+                const action = `{{ route('admin.product-details.destroy', ':id') }}`.replace(':id', data.id)
+                $('#delete-variant-form').attr('action', action)
+                
                 Swal.fire({
                     icon: 'question',
                     title: 'Apakah anda yakin?',
-                    text: 'Data ukuran akan dihapus dari produk ini!',
+                    text: 'Data varian akan dihapus dari produk ini!',
                     showCancelButton: true,
                     cancelButtonText: 'Batal',
                     confirmButtonText: 'Yakin'
+                }).then((result) => {
+                    if(result.isConfirmed) {
+                        $('#delete-variant-form').submit()
+                    }
                 })
+
             })
         })
     </script>

@@ -8,6 +8,8 @@ use App\Http\Requests\ProductRequest;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Size;
+use App\Models\Warna;
 use App\Traits\UploadTrait;
 use Illuminate\Http\Request;
 
@@ -30,7 +32,9 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $category = Category::where('is_delete', 0)->get();
+        $brand = Brand::where('is_delete', 0)->get();
+        return view('pages.admin.products.create', compact('brand', 'category'));
     }
 
     /**
@@ -49,7 +53,7 @@ class ProductController extends Controller
 
             Product::create($data);
 
-            return redirect()->back()->with('success', 'Berhasil menambahkan data product');
+            return redirect()->route('admin.products.index')->with('success', 'Berhasil menambahkan data produk');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
         }
@@ -61,7 +65,9 @@ class ProductController extends Controller
     public function show(String $id)
     {
         $product = Product::with('category', 'brand')->where('id', $id)->first();
-        return view('pages.admin.products.show', compact('product'));
+        $sizes = Size::where('product_id', $id)->where('is_delete',0)->get();
+        $colors = Warna::where('product_id', $id)->where('is_delete',0)->get();
+        return view('pages.admin.products.show', compact('product', 'sizes', 'colors'));
     }
 
     /**
@@ -69,7 +75,9 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        $category = Category::where('is_delete', 0)->get();
+        $brand = Brand::where('is_delete', 0)->get();
+        return view('pages.admin.products.edit', compact('product', 'brand', 'category'));
     }
 
     /**
@@ -87,12 +95,13 @@ class ProductController extends Controller
 
                 $data["image"] = $this->upload('products', $request->file('image'));
             }
+            
 
             $product->update($data);
 
-            return redirect()->back()->with('success', 'Berhasil mengubah data product');
+            return redirect()->route('admin.products.index')->with('success', 'Berhasil mengubah data produk');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', $th->getMessage());
+            return redirect()->back()->with('error', $th->getMessage())->withInput();
         }
     }
 
@@ -108,7 +117,7 @@ class ProductController extends Controller
 
             $product->update(["is_delete" => 1, 'image' => null]);
 
-            return redirect()->back()->with('success', 'Berhasil menghapus product');
+            return redirect()->back()->with('success', 'Berhasil menghapus produk');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
         }

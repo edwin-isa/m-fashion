@@ -14,17 +14,7 @@
 
     <link id="themeColors" rel="stylesheet" href="{{ asset('dist/css/style.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('dist/libs/sweetalert2/dist/sweetalert2.min.css') }}">
-    <style>
-        .app-header:not(.fixed-header) {
-            background-color: white;
-        }
-        .dt-column-title {
-            text-wrap-mode: nowrap;
-        }
-        .table tbody th, .table tbody td, .table thead th, .table thead td {
-            text-align: start!important;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('dist/css/custom.css') }}">
 
     @stack('style')
 </head>
@@ -58,6 +48,8 @@
     <script src="{{ asset('dist/js/sidebarmenu.js') }}"></script>
     <script src="{{ asset('dist/js/custom.js') }}"></script>
     <script src="{{ asset('dist/libs/sweetalert2/dist/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('dist/libs/momentjs/moment.min.js') }}"></script>
+    <script src="{{ asset('dist/libs/momentjs/moment-with-locales.min.js') }}"></script>
 
     @stack('script')
 </body>
