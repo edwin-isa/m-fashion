@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_images', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('product_id')->constrained('products')->cascadeOnDelete();
-            $table->string('image');
-            $table->timestamps();
-        });
+        if(Schema::hasColumn('product_details', 'size')){
+            Schema::table('product_details', function (Blueprint $table) {
+                $table->dropColumn('size');
+            });
+        }
     }
 
     /**
@@ -24,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_images');
+        Schema::table('product_details', function (Blueprint $table) {
+            //
+        });
     }
 };
