@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Brand extends Model
+class Size extends Model
 {
     use HasFactory, HasUuids;
 
@@ -18,6 +18,11 @@ class Brand extends Model
 
     public function products(): HasMany
     {
-        return $this->hasMany(Product::class)->where('is_delete',0);
+        return $this->hasMany(Product::class);
+    }
+
+    public function colors()
+    {
+        return $this->belongsToMany(Warna::class, 'product_details')->where('warnas.is_delete',0);
     }
 }

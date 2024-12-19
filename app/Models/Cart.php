@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Brand extends Model
+class Cart extends Model
 {
     use HasFactory, HasUuids;
 
@@ -16,8 +16,13 @@ class Brand extends Model
     protected $primaryKey = "id";
     protected $guarded = [];
 
-    public function products(): HasMany
+    public function product_detail(): BelongsTo
     {
-        return $this->hasMany(Product::class)->where('is_delete',0);
+        return $this->belongsTo(ProductDetail::class)->where('is_delete',0);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class)->where('is_delete',0);
     }
 }
